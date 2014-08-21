@@ -6,7 +6,7 @@
   </p>
   <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
 </div>
-
+<!--
 <div class="row marketing">
   <h4>HTML5 Boilerplate</h4>
   <p>
@@ -21,10 +21,46 @@
   <h4>Karma</h4>
   <p>Spectacular Test Runner for JavaScript.</p>
 </div>
+-->
 <div class="row">
     <div class="well">
-        <button ng-click="setMessage()" class="btn btn-primary">Set Msg!</button>
-        <button ng-click="updMessage()" class="btn btn-success">Update Msg!</button>
-        <button ng-click="delMessage()" class="btn btn-danger">Clear!</button>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{title}}</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    <li class="list-group-item" ng-repeat="message in messages">
+                        <span class="badge">{{message.user}}</span>
+                        {{message.message}}
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-footer">
+                <button class="btn btn-danger round pull-right" ng-click="turnFeedOff()"><i class="fa fa-unlink"></i></button>
+                <input type="text" class="form-control pull-right" name="user" id="user" style="width:120px;" ng-model="currentUser" ng-init="currentUser = 'Willmer'"/>
+                <label for="user" class="label label-primary pull-right">Send as: </label>
+                <div class="clearfix"></div>
+                <br />
+                <div class="input-group">
+                    <input type="text" class="form-control" ng-model="currentMessage"/>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-primary" tabindex="-1" ng-click="sendMessage()">Send</button>
+                        <!-- <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul> -->
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
     </div>
 </div>
