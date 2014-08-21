@@ -30,4 +30,5 @@ angular
       .otherwise({
         redirectTo: '/'
       });
-  });
+  })
+  .constant('firebaseURL', 'https://vivid-heat-1154.firebaseio.com/');
