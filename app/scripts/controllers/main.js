@@ -12,6 +12,7 @@ angular.module('angularFirebaseApp')
         // Declaring global variables for this controller
         // ------------------------------------------------------------------------
             var scope               = $scope;
+            var numberOfItems       = 10;
 
         // Injecting into the scope var elements needed in the view
         // ------------------------------------------------------------------------
@@ -29,12 +30,12 @@ angular.module('angularFirebaseApp')
         // ------------------------------------------------------------------------
             // Getting the title of the chat
             MessagesService.getChatTitle(function (chatTitle) {
-                $timeout(function () {
+                //$timeout(function () {
                     scope.title = chatTitle.title;
-                });
+                //});
             });
             // New element was added to the db
-            MessagesService.childAdded(function (addedChild) {
+            MessagesService.childAdded(numberOfItems, function (addedChild) {
                 $timeout(function () {
                     scope.messages.push(addedChild);
                 });
@@ -52,7 +53,7 @@ angular.module('angularFirebaseApp')
                     deleteMessageByName(childRemoved.nodeId);
                 });
             });
-            // Private Function that will return us the node that was removed in the db
+            // Private function that will return us the node that was removed in the db
             function deleteMessageByName(name) {
                 for (var i=0; i < scope.messages.length; i++) {
                     var currentMessage = scope.messages[i];
@@ -62,7 +63,7 @@ angular.module('angularFirebaseApp')
                     }
                 }
             }
-            // Private Function that will return us the node that changed in the db
+            // Private function that will return us the node that changed in the db
             function findMessageByName(name) {
                 var messageFound = null;
                 for (var i=0; i < scope.messages.length; i++) {
@@ -89,9 +90,29 @@ angular.module('angularFirebaseApp')
                 scope.currentMessage = null;
             };
 
-        // Function that will stop the listening to the firebase api
+        // A function that will stop the listening to the firebase api
         // ------------------------------------------------------------------------
             scope.turnFeedOff = function () {
                 MessagesService.off();
+            };
+
+        // A function that will trigger the message list pagination to next
+        // ------------------------------------------------------------------------
+            scope.pageNext =  function () {
+                var lastIndex = scope.messages.length - 1;
+                var lastItem = scope.messages[lastIndex];
+
+                MessagesService.pageNext(lastItem.name, numberOfItems).then(function (messages) {
+                    scope.messages = messages;
+                });
+            };
+        // A function that will trigger the message list pagination to prev
+        // ------------------------------------------------------------------------
+            scope.pagePrev =  function () {
+                var firstItem = scope.messages[0];
+
+                MessagesService.pagePrev(firstItem.name, numberOfItems).then(function (messages) {
+                    scope.messages = messages;
+                });
             };
      });
