@@ -2,12 +2,18 @@
 'use strict';
 
 angular.module('angularFirebaseApp')
-    .service('MessagesService', function (firebaseURL,$q) {
+    .service('MessagesService', function (firebaseURL, fbMessagesURL,$q, $firebase) {
         // Declaring global variables for this service
+        // If we need it filtered by the first 10 elements on the database then
+        // we add this '.startAt().limit(msgLimit)' to the fireMessage object
+        // builder in line 14 after messagesRef variable
         // ------------------------------------------------------------------------
-            var rootRef         = new Firebase(firebaseURL);
-            var messagesRef     = rootRef.child('messages');
-            var titleRef        = rootRef.child('title');
+            var rootRef         = new Firebase(firebaseURL),
+                messagesRef     = new Firebase(fbMessagesURL),
+                titleRef        = rootRef.child('title'),
+                fireMessage     = $firebase(messagesRef.startAt().limit(10)).$asArray(),
+                allFireMessage  = $firebase(messagesRef).$asArray();
+                console.log(allFireMessage);
 
         // Declaring methods for this service
         // ------------------------------------------------------------------------
@@ -28,13 +34,14 @@ angular.module('angularFirebaseApp')
                     },
                 // Will work when the API responds with a change in the db
                 // ------------------------------------------------------------------------
-                    childAdded: function childAdded (msgLimit, cb) {
-                        messagesRef.startAt().limit(msgLimit).on('child_added', function (snapshot) {
-                            var snapVal = snapshot.val();
+                    childAdded: function childAdded (cb) {
+                        // .startAt().limit(msgLimit)
+                        fireMessage.$watch(function (data) {
+                            var dataVal = fireMessage.$getRecord(data.key);
                             cb.call(this, {
-                                user: snapVal.user,
-                                message: snapVal.message,
-                                title: snapshot.name()
+                                user: dataVal.user,
+                                message: dataVal.message,
+                                title: data.key
                             });
                         });
                     },
@@ -63,43 +70,36 @@ angular.module('angularFirebaseApp')
                 // Will add a new message to the db API
                 // ------------------------------------------------------------------------
                     add: function addMessage (message) {
-                        messagesRef.push(message);
+                        var returnName = fireMessage.$add(message);
+                        return returnName;
                     },
                 // Will turn off this browser listening to the API
                 // ------------------------------------------------------------------------
                     off: function turnFeedOff () {
-                        messagesRef.off();
+                        fireMessage.$destroy();
                     },
-                // Will perform a next pagination action over the list
+                // Will perform a prev n next pagination action over the list
                 // ------------------------------------------------------------------------
-                    pageNext: function pageNext (name, numberOfItems) {
-                        var deferred = $q.defer();
-                        var messages = [];
+                    pageFlip: function pageFlip (name, numberOfItems, action) {
+                        var deferred = $q.defer(),
+                            messages = [],
+                            item = {},
+                            thisItemKey = '',
+                            lastItemId = 0;
 
-                        messagesRef.startAt(null, name).limit(numberOfItems).once('value', function (snapshot) {
-                            snapshot.forEach(function (snapItem) {
-                                var itemVal = snapItem.val();
-                                itemVal.name = snapItem.name();
-                                messages.push(itemVal);
-                            });
+                        lastItemId = allFireMessage.$indexFor(name);
+                        if (0 < lastItemId && lastItemId < allFireMessage.length-1) {
+                            if (action === 'prev') {lastItemId = lastItemId - (numberOfItems-1)}
+                            for (var i = lastItemId;i<=lastItemId+(numberOfItems-1);i++) {
+                                thisItemKey = allFireMessage.$keyAt(i);
+                                if (thisItemKey) {
+                                    item = allFireMessage.$getRecord(thisItemKey);
+                                    item.title = item.$id;
+                                    messages.push(item);
+                                }
+                            }
                             deferred.resolve(messages);
-                        });
-                        return deferred.promise;
-                    },
-                // Will perform a prev pagination action over the list
-                // ------------------------------------------------------------------------
-                    pagePrev: function pagePrev (name, numberOfItems) {
-                        var deferred = $q.defer();
-                        var messages = [];
-
-                        messagesRef.endAt(null, name).limit(numberOfItems).once('value', function (snapshot) {
-                            snapshot.forEach(function (snapItem) {
-                                var itemVal = snapItem.val();
-                                itemVal.name = snapItem.name();
-                                messages.push(itemVal);
-                            });
-                            deferred.resolve(messages);
-                        });
+                        }
                         return deferred.promise;
                     }
             };

@@ -35,10 +35,8 @@ angular.module('angularFirebaseApp')
                 //});
             });
             // New element was added to the db
-            MessagesService.childAdded(numberOfItems, function (addedChild) {
-                $timeout(function () {
-                    scope.messages.push(addedChild);
-                });
+            MessagesService.childAdded(function (addedChild) {
+                scope.messages.push(addedChild);
             });
             // a element on the db was updated
             MessagesService.childUpdated(function (childUpdated) {
@@ -86,7 +84,10 @@ angular.module('angularFirebaseApp')
                     message: scope.currentMessage
                 };
                 // push it man
-                MessagesService.add(newMessage);
+                var promise = MessagesService.add(newMessage);
+                promise.then(function (data) {
+                    console.log(data.name());
+                });
                 scope.currentMessage = null;
             };
 
@@ -102,7 +103,7 @@ angular.module('angularFirebaseApp')
                 var lastIndex = scope.messages.length - 1;
                 var lastItem = scope.messages[lastIndex];
 
-                MessagesService.pageNext(lastItem.name, numberOfItems).then(function (messages) {
+                MessagesService.pageFlip(lastItem.title, numberOfItems, 'next').then(function (messages) {
                     scope.messages = messages;
                 });
             };
@@ -111,7 +112,7 @@ angular.module('angularFirebaseApp')
             scope.pagePrev =  function () {
                 var firstItem = scope.messages[0];
 
-                MessagesService.pagePrev(firstItem.name, numberOfItems).then(function (messages) {
+                MessagesService.pageFlip(firstItem.title, numberOfItems, 'prev').then(function (messages) {
                     scope.messages = messages;
                 });
             };

@@ -15,7 +15,8 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'firebase'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -31,4 +32,5 @@ angular
         redirectTo: '/'
       });
   })
-  .constant('firebaseURL', 'https://vivid-heat-1154.firebaseio.com/');
+  .constant('firebaseURL', 'https://vivid-heat-1154.firebaseio.com/')
+  .constant('fbMessagesURL', 'https://vivid-heat-1154.firebaseio.com/messages');
