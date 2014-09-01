@@ -13,7 +13,6 @@ angular.module('angularFirebaseApp')
                 titleRef        = rootRef.child('title'),
                 fireMessage     = $firebase(messagesRef.startAt().limit(10)).$asArray(),
                 allFireMessage  = $firebase(messagesRef).$asArray();
-                console.log(allFireMessage);
 
         // Declaring methods for this service
         // ------------------------------------------------------------------------
@@ -25,45 +24,21 @@ angular.module('angularFirebaseApp')
                             cb.call(this, {title: snapshot.val()});
                         });
                     },
-                // Will perform a next pagination action over the list
-                // ------------------------------------------------------------------------
-                    getChatLength: function getChatLength (cb) {
-                        messagesRef.once('value', function(snapshot) {
-                            cb.call(this, {chatLength: snapshot.numChildren()});
-                        });
-                    },
                 // Will work when the API responds with a change in the db
                 // ------------------------------------------------------------------------
                     childAdded: function childAdded (cb) {
-                        // .startAt().limit(msgLimit)
-                        fireMessage.$watch(function (data) {
-                            var dataVal = fireMessage.$getRecord(data.key);
+                        // Replace allFireMessage for fireMessage ref object to enable
+                        // Pagination
+                        allFireMessage.$watch(function (data) {
+                            var dataVal = allFireMessage.$getRecord(data.key);
+                            if (data.event === 'child_removed') {
+                                dataVal = {name: '', message: ''};
+                            }
                             cb.call(this, {
+                                event: data.event,
                                 user: dataVal.user,
                                 message: dataVal.message,
                                 title: data.key
-                            });
-                        });
-                    },
-                // Will fetch which node was updated in the db
-                // ------------------------------------------------------------------------
-                    childUpdated: function childUpdated (cb) {
-                        messagesRef.on('child_changed', function(snapshot) {
-                            var snapVal = snapshot.val();
-                            cb.call(this, {
-                                nodeId: snapshot.name(),
-                                message: snapVal.message
-                            });
-                        });
-                    },
-                // Will fetch which node was updated in the db
-                // ------------------------------------------------------------------------
-                    childRemoved: function childRemoved (cb) {
-                        messagesRef.on('child_removed', function(snapshot) {
-                            var snapVal = snapshot.val();
-                            cb.call(this, {
-                                nodeId: snapshot.name(),
-                                message: snapVal.message
                             });
                         });
                     },

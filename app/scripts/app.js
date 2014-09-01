@@ -24,6 +24,18 @@ angular
         templateUrl: 'views/main.html',
         controller: 'MainController'
       })
+      .when('/chat', {
+        templateUrl: 'views/chat.html',
+        controller: 'ChatController'
+      })
+      .when('/login', {
+        templateUrl: 'views/login.html',
+        controller: 'LoginController'
+      })
+      .when('/register', {
+        templateUrl: 'views/register.html',
+        controller: 'RegisterController'
+      })
       .when('/about', {
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'

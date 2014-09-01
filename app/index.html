@@ -25,9 +25,10 @@
     <div class="container">
       <div class="header">
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a ng-href="#">Home</a></li>
-          <li><a ng-href="#/about">About</a></li>
-          <li><a ng-href="#">Contact</a></li>
+          <li class="active"><a ng-href="#"><i class="fa fa-home"></i></a></li>
+          <li><a ng-href="#/chat"><i class="fa fa-comments"></i> Chat</a></li>
+          <li><a ng-href="#/register"><i class="fa fa-users"></i> Register</a></li>
+          <li><a ng-href="#/login"><i class="fa fa-key"></i> Login</a></li>
         </ul>
         <h3 class="text-muted">angularFirebase</h3>
       </div>
@@ -78,7 +79,11 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
+
         <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/chat.js"></script>
+        <script src="scripts/controllers/register.js"></script>
+        <script src="scripts/controllers/login.js"></script>
         <script src="scripts/controllers/about.js"></script>
 
         <script src="scripts/model/services/messages.js"></script>
