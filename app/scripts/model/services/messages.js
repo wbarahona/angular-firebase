@@ -36,7 +36,7 @@ angular.module('angularFirebaseApp')
                             }
                             cb.call(this, {
                                 event: data.event,
-                                user: dataVal.user,
+                                email: dataVal.email,
                                 message: dataVal.message,
                                 title: data.key
                             });

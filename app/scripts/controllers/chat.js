@@ -76,8 +76,9 @@ angular.module('angularFirebaseApp')
             scope.sendMessage = function () {
                 // lets set the new message
                 var newMessage = {
-                    user: scope.currentUser,
-                    message: scope.currentMessage
+                    message: scope.currentMessage,
+                    email: scope.user.email,
+                    uid: scope.user.uid,
                 };
                 // push it man
                 var promise = MessagesService.add(newMessage);

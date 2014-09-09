@@ -1,4 +1,3 @@
-/*global Firebase*/
 'use strict';
 
 /**
@@ -9,19 +8,19 @@
  * Controller of the angularFirebaseApp
  */
 angular.module('angularFirebaseApp')
-    .controller('RegisterController', function ($scope, $firebaseSimpleLogin, firebaseURL) {
+    .controller('RegisterController', function ($scope, RegisterService, $location) {
         // Declaring global variables for this controller
         // ------------------------------------------------------------------------
-            var scope               = $scope,
-                fbMessages          = new Firebase(firebaseURL);
+            var scope               = $scope;
 
-            scope.errorsFound       = false;
-            scope.errors            = [];
-            scope.simpleLogin       = $firebaseSimpleLogin(fbMessages);
+            scope.errors            = {
+                exist : false,
+                message : ''
+            };
 
         // Declaring view listeners
         // ------------------------------------------------------------------------
-            scope.registerUser = {
+            scope.registerUser      = {
                 email: '',
                 password: '',
                 confirmPassword: ''
@@ -32,23 +31,33 @@ angular.module('angularFirebaseApp')
         // ------------------------------------------------------------------------
 
             scope.register          =  function () {
-                var promise     = scope.simpleLogin.$createUser(scope.registerForm.email.$viewValue,scope.registerForm.password.$viewValue),
-                    userObj     = scope.registerForm;
+                scope.registerUser         = {
+                    email : scope.registerForm.email.$viewValue,
+                    password : scope.registerForm.password.$viewValue,
+                    repassword : scope.registerForm.confirmPassword.$viewValue
+                };
 
-                if (userObj.password.$viewValue !== userObj.confirmPassword.$viewValue) {
-                    scope.errors.push('Passwords does not match!');
+                if (scope.registerUser.password !== scope.registerUser.repassword) {
+                    scope.errors.exist = true;
+                    scope.errors.message = 'Passwords does not match!';
                 }else {
-                    scope.errors        = [];
-                    scope.errorsFound   = false;
+                    scope.errors.exist = false;
+                    scope.errors.message = '';
                 }
-                if (scope.errors.length > 0) {
-                    scope.errorsFound = true;
-                    return;
+                if (scope.errors.message.length > 0) {
+                    scope.errors.exist = true;
+                } else {
+                    RegisterService.registerUser(scope.registerUser).then(function (response) {
+                        if (response.code === 0) {
+                            scope.errors.exist = true;
+                            scope.errors.message = response.message;
+                        } else {
+                            $location.path('/login');
+                        }
+                    },function (error) {
+                        console.log(error);
+                    });
                 }
-                promise.then(function (user) {
-                    console.log(user);
-                }, function (error) {
-                    console.log(error);
-                });
+
             };
      });

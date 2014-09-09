@@ -16,8 +16,8 @@
             <ul class="nav navbar-nav">
                 <li ng-class="{active:isActive('/')}"><a ng-href="#"><i class="fa fa-home"></i></a></li>
                 <li ng-class="{active:isActive('/chat')}"><a ng-href="#/chat"><i class="fa fa-comments"></i> Chat</a></li>
-                <li ng-class="{active:isActive('/register')}"><a ng-href="#/register"><i class="fa fa-users"></i> Register</a></li>
-                <li ng-class="{active:isActive('/login')}"><a ng-href="#/login"><i class="fa fa-key"></i> Login</a></li>
+                <li ng-class="{active:isActive('/register')}" ng-show="!isLoggedIn()"><a ng-href="#/register"><i class="fa fa-users"></i> Register</a></li>
+                <li ng-class="{active:isActive('/login')}" ng-show="!isLoggedIn()"><a ng-href="#/login"><i class="fa fa-key"></i> Login</a></li>
                 <li><a ng-href="#/logout" ng-show="isLoggedIn()"><i class="fa fa-unlink"></i> Logout</a></li>
                 <!--
                 <li ng-class="{active:isActive('/login')}" class="dropdown">

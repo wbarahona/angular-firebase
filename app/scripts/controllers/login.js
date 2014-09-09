@@ -8,7 +8,7 @@
  * Controller of the angularFirebaseApp
  */
 angular.module('angularFirebaseApp')
-    .controller('LoginController', function ($scope, LoginService, $location) {
+    .controller('LoginController', function ($scope, LoginService, $location, $rootScope) {
         // Declaring global variables for this controller
         // ------------------------------------------------------------------------
             var scope               = $scope;
@@ -32,12 +32,14 @@ angular.module('angularFirebaseApp')
             // ------------------------------------------------------------------------
                 scope.login =  function () {
                     LoginService.login(scope.user).then(function (response) {
+                        // Expect the code returned from the service and evaluate it
                         if (response.code === 0) {
                             scope.errors.exist = true;
                             scope.errors.message = response.message;
                         }else {
                             scope.errors.exist = false;
                             scope.errors.message = '';
+                            $rootScope.user = response.content;
                             $location.path('/chat');
                         }
                     },function (error) {

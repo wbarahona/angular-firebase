@@ -7,7 +7,7 @@
             <div class="panel-body">
                 <ul class="list-group">
                     <li class="list-group-item" ng-repeat="message in messages">
-                        <span class="badge">{{message.user}}</span>
+                        <span class="badge">{{message.email}}</span>
                         {{message.message}}
                     </li>
                 </ul>
@@ -20,8 +20,8 @@
             </div>
             <div class="panel-footer">
                 <button class="btn btn-danger round pull-right" ng-click="turnFeedOff()"><i class="fa fa-unlink"></i></button>
-                <input type="text" class="form-control pull-right" name="user" id="user" style="width:120px;" ng-model="currentUser" ng-init="currentUser = 'Willmer'"/>
-                <label for="user" class="label label-primary pull-right">Send as: </label>
+                <!-- <input type="text" class="form-control pull-right" name="user" id="user" style="width:120px;" ng-model="currentUser" ng-init="currentUser = 'Willmer'"/>
+                <label for="user" class="label label-primary pull-right">Send as: </label> -->
                 <div class="clearfix"></div>
                 <br />
                 <div class="input-group">
