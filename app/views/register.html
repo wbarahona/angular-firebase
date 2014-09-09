@@ -1,7 +1,10 @@
 <form name="registerForm" novalidate ng-submit="register()" class="form">
-    <div class="alert alert-danger alert-dismissable" role="alert" ng-show="wrongCredentials">
+    <div class="alert alert-danger alert-dismissable" role="alert" ng-show="errorsFound">
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        Hmmm... some fields seems to be wrong! try again!
+        Hmmm... you may want to check the following:
+        <ol>
+            <li ng-repeat="error in errors">{{ error }}</li>
+        </ol>
     </div>
     <div class="form-group" ng-class="{'has-error' : registerForm.email.$invalid && registerForm.email.$dirty, 'has-success' : registerForm.email.$valid && registerForm.email.$dirty}">
         <label for="email" class="control-label">Email: </label>
@@ -13,7 +16,12 @@
         <input type="password" name="password" class="form-control" placeholder="Password" ng-model="newuser.password" required cu-focus/>
         <p class="help-block" ng-show="registerForm.password.$invalid && registerForm.password.$dirty && !registerForm.password.$focused">This password field is required!</p>
     </div>
-    <div class="form-group" ng-class="{'has-error' : registerForm.confirmPassword.$invalid && registerForm.confirmPassword.$dirty, 'has-success' : registerForm.confirmPassword.$valid && registerForm.confirmPassword.$dirty}">
+    <div class="form-group" ng-class="{'has-error' :
+                                            registerForm.confirmPassword.$invalid &&
+                                            registerForm.confirmPassword.$dirty ,
+                                       'has-success' :
+                                            registerForm.confirmPassword.$valid &&
+                                            registerForm.confirmPassword.$dirty}">
         <label for="confirmPassword" class="control-label">Password: </label>
         <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password" ng-model="newuser.confirmpassword" required cu-focus/>
         <p class="help-block" ng-show="registerForm.password.$invalid && registerForm.password.$dirty && !registerForm.password.$focused">This confirm password field is required!</p>
